@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Al's Workshop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #f5f0e8;
+      --warm:     #ede5d4;
+      --tan:      #c9b99a;
+      --brown:    #7a5c3e;
+      --dark:     #2e1f0f;
+      --accent:   #b05e2a;
+      --accent2:  #3a6b5c;
+      --shadow:   rgba(46,31,15,0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      background-color: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative; z-index: 10;
+      padding: 3.5rem 4rem 2.5rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--tan);
+      background: linear-gradient(to bottom, var(--warm), var(--cream));
+    }
+
+    .site-identity h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .site-identity h1 span {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .site-identity p {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--brown);
+      font-style: italic;
+      letter-spacing: 0.03em;
+    }
+
+    .header-ornament {
+      font-size: 3rem;
+      opacity: 0.18;
+      user-select: none;
+      line-height: 1;
+    }
+
+    /* ── Intro strip ── */
+    .intro {
+      position: relative; z-index: 10;
+      padding: 2rem 4rem;
+      background: var(--warm);
+      border-bottom: 1px solid var(--tan);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .intro-rule {
+      width: 3px;
+      height: 3rem;
+      background: var(--accent);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .intro p {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--brown);
+      max-width: 680px;
+      line-height: 1.7;
+    }
+
+    /* ── Main grid ── */
+    main {
+      position: relative; z-index: 10;
+      padding: 3rem 4rem 5rem;
+    }
+
+    .section-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--tan);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--tan);
+      opacity: 0.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.8rem;
+    }
+
+    /* ── Card ── */
+    .card {
+      position: relative;
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px var(--shadow), 0 0 0 1px rgba(201,185,154,0.25);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.28s cubic-bezier(.22,.68,0,1.2),
+                  box-shadow 0.28s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 14px 36px var(--shadow), 0 0 0 1px rgba(176,94,42,0.3);
+    }
+
+    .card:hover .card-arrow { opacity: 1; transform: translate(3px, -3px); }
+    .card:hover .card-thumb-overlay { opacity: 1; }
+
+    /* Thumb area */
+    .card-thumb {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      overflow: hidden;
+      background: var(--warm);
+    }
+
+    .card-thumb-icon {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+      opacity: 0.55;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+
+    .card:hover .card-thumb-icon { transform: scale(1.12); opacity: 0.75; }
+
+    .card-thumb-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(176,94,42,0.12), rgba(58,107,92,0.12));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Colour accents per card */
+    .card[data-color="rust"]   .card-thumb { background: linear-gradient(135deg,#f5ece0,#e8d5c0); }
+    .card[data-color="teal"]   .card-thumb { background: linear-gradient(135deg,#e0ecea,#c8ddd9); }
+    .card[data-color="slate"]  .card-thumb { background: linear-gradient(135deg,#e4e8ec,#ccd3db); }
+    .card[data-color="gold"]   .card-thumb { background: linear-gradient(135deg,#f5f0d8,#ecdfc0); }
+    .card[data-color="sage"]   .card-thumb { background: linear-gradient(135deg,#e4ecde,#cddbc6); }
+    .card[data-color="rose"]   .card-thumb { background: linear-gradient(135deg,#f5e4e4,#e8cecc); }
+    .card[data-color="sky"]    .card-thumb { background: linear-gradient(135deg,#deeaf5,#c4d8ed); }
+    .card[data-color="plum"]   .card-thumb { background: linear-gradient(135deg,#ede0f0,#ddc8e8); }
+
+    /* Tag badge */
+    .card-tag {
+      position: absolute;
+      top: 0.75rem; left: 0.75rem;
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.82);
+      color: var(--brown);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Arrow indicator */
+    .card-arrow {
+      position: absolute;
+      top: 0.8rem; right: 0.9rem;
+      font-size: 1.1rem;
+      color: var(--accent);
+      opacity: 0;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    /* Body */
+    .card-body {
+      padding: 1.25rem 1.4rem 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.25;
+      margin-bottom: 0.55rem;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--brown);
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .card-footer {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--warm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--tan);
+      letter-spacing: 0.05em;
+    }
+
+    .card-footer .gh-link {
+      font-size: 0.72rem;
+      color: var(--tan);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      opacity: 0.7;
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative; z-index: 10;
+      border-top: 1px solid var(--tan);
+      padding: 2rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--warm);
+    }
+
+    footer p {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--tan);
+      font-style: italic;
+    }
+
+    .footer-ornament {
+      font-size: 1.4rem;
+      opacity: 0.2;
+    }
+
+    /* ── Entrance animation ── */
+    .card {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.55s cubic-bezier(.22,.68,0,1.1) forwards;
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card:nth-child(1) { animation-delay: 0.08s; }
+    .card:nth-child(2) { animation-delay: 0.16s; }
+    .card:nth-child(3) { animation-delay: 0.24s; }
+    .card:nth-child(4) { animation-delay: 0.32s; }
+    .card:nth-child(5) { animation-delay: 0.40s; }
+    .card:nth-child(6) { animation-delay: 0.48s; }
+    .card:nth-child(7) { animation-delay: 0.56s; }
+    .card:nth-child(8) { animation-delay: 0.64s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      header, .intro, main, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+      header { padding-top: 2rem; }
+      .header-ornament { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-identity">
+      <h1>Al's <span>Workshop</span></h1>
+      <p>A collection of personal projects &amp; tools</p>
+    </div>
+    <div class="header-ornament">✦</div>
+  </header>
+
+  <div class="intro">
+    <div class="intro-rule"></div>
+    <p>Click any project below to launch it. These are personal builds — games, simulators, editors, and utilities — each living on GitHub Pages. More coming as time goes on.</p>
+  </div>
+
+  <main>
+    <div class="section-label">Projects &amp; Applications</div>
+
+    <div class="grid">
+
+      <!-- 1. Gin Rummy -->
+      <a class="card" data-color="rust"
+         href="https://alsys123.github.io/gringinrummy/" target="_blank">
+        <div class="card-thumb">
+          <div class="card-thumb-icon">🃏</div>
+          <div class="card-thumb-overlay"></div>
+          <span class="card-tag">Card Game</span>
+          <span class="card-arrow">↗</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Gin Rummy</div>
+          <div class="card-desc">A full browser-based Gin Rummy card game with hand evaluation, knock logic, and match-win celebrations.</div>
+          <div class="card-footer">
+            <span class="gh-link">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              alsys123/gringinrummy
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 2. Image Editor -->
+      <a class="card" data-color="teal"
+         href="https://alsys123.github.io/grinImageEdit/" target="_blank">
+        <div class="card-thumb">
+          <div class="card-thumb-icon">🖼️</div>
+          <div class="card-thumb-overlay"></div>
+          <span class="card-tag">Creative Tool</span>
+          <span class="card-arrow">↗</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Image Editor</div>
+          <div class="card-desc">A browser image editing tool with pinch-to-zoom iPad support, canvas manipulation, and export options.</div>
+          <div class="card-footer">
+            <span class="gh-link">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              alsys123/grinImageEdit
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 3. MSFS Cockpit Panel -->
+      <a class="card" data-color="slate"
+         href="#" target="_blank">
+        <div class="card-thumb">
+          <div class="card-thumb-icon">✈️</div>
+          <div class="card-thumb-overlay"></div>
+          <span class="card-tag">Simulator</span>
+          <span class="card-arrow">↗</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">MSFS Cockpit Panel</div>
+          <div class="card-desc">A web-based instrument panel for Microsoft Flight Simulator 2020, streaming live data via SimConnect to any browser or iPad.</div>
+          <div class="card-footer">
+            <span class="gh-link">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              alsys123 / msfs-panel
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 4. throughPhrase -->
+      <a class="card" data-color="gold"
+         href="#" target="_blank">
+        <div class="card-thumb">
+          <div class="card-thumb-icon">💬</div>
+          <div class="card-thumb-overlay"></div>
+          <span class="card-tag">Word Game</span>
+          <span class="card-arrow">↗</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">throughPhrase</div>
+          <div class="card-desc">A phrase-guessing browser game — guess the hidden phrase one letter at a time before time or chances run out.</div>
+          <div class="card-footer">
+            <span class="gh-link">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              alsys123 / throughPhrase
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 5. Crossword Grid -->
+      <a class="card" data-color="sage"
+         href="#" target="_blank">
+        <div class="card-thumb">
+          <div class="card-thumb-icon">🔲</div>
+          <div class="card-thumb-overlay"></div>
+          <span class="card-tag">Puzzle</span>
+          <span class="card-arrow">↗</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Crossword Grid</div>
+          <div class="card-desc">A digitized 13×13 crossword puzzle rendered as an interactive HTML grid, for solving directly in the browser.</div>
+          <div class="card-footer">
+            <span class="gh-link">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              alsys123 / crossword
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 6. App 6 placeholder -->
+      <a class="card" data-color="rose"
+         href="#" target="_blank">
+        <div class="card-thumb">
+          <div class="card-thumb-icon">🎵</div>
+          <div class="card-thumb-overlay"></div>
+          <span class="card-tag">Music</span>
+          <span class="card-arrow">↗</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Project Six</div>
+          <div class="card-desc">Update the title, description, link, tag, and emoji for this card in the HTML to match your sixth application.</div>
+          <div class="card-footer">
+            <span class="gh-link">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              alsys123 / project-six
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 7. App 7 placeholder -->
+      <a class="card" data-color="sky"
+         href="#" target="_blank">
+        <div class="card-thumb">
+          <div class="card-thumb-icon">🛠️</div>
+          <div class="card-thumb-overlay"></div>
+          <span class="card-tag">Utility</span>
+          <span class="card-arrow">↗</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Project Seven</div>
+          <div class="card-desc">Update the title, description, link, tag, and emoji for this card in the HTML to match your seventh application.</div>
+          <div class="card-footer">
+            <span class="gh-link">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              alsys123 / project-seven
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 8. App 8 placeholder -->
+      <a class="card" data-color="plum"
+         href="#" target="_blank">
+        <div class="card-thumb">
+          <div class="card-thumb-icon">📋</div>
+          <div class="card-thumb-overlay"></div>
+          <span class="card-tag">Tool</span>
+          <span class="card-arrow">↗</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Project Eight</div>
+          <div class="card-desc">Update the title, description, link, tag, and emoji for this card in the HTML to match your eighth application.</div>
+          <div class="card-footer">
+            <span class="gh-link">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              alsys123 / project-eight
+            </span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>Al's Workshop · Built with care, expanded over time</p>
+    <div class="footer-ornament">✦</div>
+  </footer>
+
+</body>
+</html>
