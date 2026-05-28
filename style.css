@@ -58,15 +58,15 @@ header {
 
 .site-identity p {
     margin-top: 0.5rem;
-    font-size: 1rem;
+    font-size: 12px;
     font-weight: 300;
-    color: var(--brown);
+    color: black;
     font-style: italic;
     letter-spacing: 0.03em;
 }
 
 .header-ornament {
-    font-size: 3rem;
+    font-size: 16px;
     opacity: 0.18;
     user-select: none;
     line-height: 1;
@@ -94,7 +94,7 @@ header {
 .intro p {
     font-size: 12px;
     font-weight: 300;
-    color: var(--brown);
+    color: black;
     max-width: 680px;
     line-height: 1.7;
 }
