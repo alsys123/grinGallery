@@ -16,7 +16,7 @@ html { scroll-behavior: smooth; }
 
 body {
     font-family: 'Source Serif 4', Georgia, serif;
-    background-color: var(--cream);
+    background-color: white;
     color: var(--dark);
     min-height: 100vh;
     overflow-x: hidden;
