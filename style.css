@@ -34,7 +34,7 @@ body::before {
 /* ── Header ── */
 header {
     position: relative; z-index: 10;
-    padding: 3.5rem 4rem 2.5rem;
+    padding: 1.8rem 4rem 1.2rem;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -75,7 +75,7 @@ header {
 /* ── Intro strip ── */
 .intro {
     position: relative; z-index: 10;
-    padding: 2rem 4rem;
+    padding: 1rem 4rem;
     background: var(--warm);
     border-bottom: 1px solid var(--tan);
     display: flex;
@@ -127,8 +127,8 @@ main {
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.8rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));  /* was 300px */
+    gap: 1rem; 
 }
 
 /* ── Card ── */
@@ -167,7 +167,7 @@ main {
 .card-thumb-icon {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 4rem;
+    font-size: 2rem;
     opacity: 0.55;
     transition: transform 0.35s ease, opacity 0.35s ease;
 }
@@ -218,7 +218,7 @@ main {
 
 /* Body */
 .card-body {
-    padding: 1.25rem 1.4rem 1.5rem;
+    padding: 0.7rem 0.8rem 0.9rem;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -226,15 +226,15 @@ main {
 
 .card-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.22rem;
     font-weight: 700;
     color: var(--dark);
     line-height: 1.25;
-    margin-bottom: 0.55rem;
+    font-size: 0.85rem;            /* was 1.22rem */
+    margin-bottom: 0.3rem;
 }
 
 .card-desc {
-    font-size: 0.88rem;
+    font-size: 0.72rem;
     font-weight: 300;
     color: var(--brown);
     line-height: 1.65;
