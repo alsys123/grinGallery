@@ -44,7 +44,7 @@ header {
 
 .site-identity h1 {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-size: 20px;
     font-weight: 700;
     color: var(--dark);
     line-height: 1.1;
@@ -72,32 +72,6 @@ header {
     line-height: 1;
 }
 
-/* ── Intro strip ── */
-.intro {
-    position: relative; z-index: 10;
-    padding: 1rem 4rem;
-    background: var(--warm);
-    border-bottom: 1px solid var(--tan);
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.intro-rule {
-    width: 3px;
-    height: 3rem;
-    background: var(--accent);
-    border-radius: 2px;
-    flex-shrink: 0;
-}
-
-.intro p {
-    font-size: 12px;
-    font-weight: 300;
-    color: black;
-    max-width: 680px;
-    line-height: 1.7;
-}
 
 /* ── Main grid ── */
 main {
@@ -111,8 +85,8 @@ main {
     font-weight: 400;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--tan);
-    margin-bottom: 2rem;
+    color: black;
+    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -165,11 +139,16 @@ main {
 }
 
 .card-thumb-icon {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: right;
+    justify-content: right;
+    font-size: 32px;
     opacity: 0.55;
     transition: transform 0.35s ease, opacity 0.35s ease;
+    top: 0px;
+    right: 5px;
 }
 
 .card:hover .card-thumb-icon { transform: scale(1.12); opacity: 0.75; }
